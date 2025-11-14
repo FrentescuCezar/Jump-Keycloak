@@ -1,0 +1,30 @@
+services:
+  keycloak:
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+    container_name: Jump-Keycloak
+    command: ["start", "--optimized", "--import-realm"]
+    env_file:
+      - ../.env
+    working_dir: /opt/keycloak
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - jump-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 60s
+
+volumes:
+  keycloak_data:
+
+networks:
+  jump-network:
+    name: jump-network
+    external: true

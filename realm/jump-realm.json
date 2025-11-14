@@ -1,0 +1,74 @@
+{
+  "realm": "jump",
+  "enabled": true,
+  "displayName": "Jump",
+  "loginWithEmailAllowed": true,
+  "registrationAllowed": true,
+  "sslRequired": "external",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en"],
+  "defaultLocale": "en",
+  "clients": [
+    {
+      "clientId": "jump-frontend",
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "implicitFlowEnabled": false,
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": false,
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "redirectUris": ["http://localhost:3000/*", "http://frontend:3000/*"],
+      "webOrigins": ["http://localhost:3000", "http://frontend:3000"]
+    },
+    {
+      "clientId": "jump-api",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "bearerOnly": false,
+      "secret": "dev-secret",
+      "redirectUris": ["http://localhost:3001/*", "http://backend:3001/*"],
+      "webOrigins": ["*"],
+      "serviceAccountsClientId": "jump-api",
+      "authorizationServicesEnabled": false
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Default user role"
+      },
+      {
+        "name": "admin",
+        "description": "Administrator role"
+      },
+      {
+        "name": "realm-admin",
+        "description": "Realm administrator with full access to manage users and clients"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "devuser",
+      "email": "devuser@example.com",
+      "enabled": true,
+      "emailVerified": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "ChangeMe123!",
+          "temporary": true
+        }
+      ],
+      "realmRoles": ["user"]
+    }
+  ]
+}

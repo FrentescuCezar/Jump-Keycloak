@@ -1,0 +1,11 @@
+{
+  "name": "jump-keycloak",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "docker": "docker network create jump-network 2>/dev/null || true && docker compose -p jump-keycloak -f docker/compose.dev.yml up --build",
+    "docker:prod": "docker network create jump-network 2>/dev/null || true && docker compose -p jump-keycloak -f docker/compose.prod.yml up --build",
+    "docker:down": "docker compose -p jump-keycloak -f docker/compose.dev.yml down"
+  }
+}
