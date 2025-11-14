@@ -35,20 +35,13 @@
       "secret": "dev-secret",
       "redirectUris": ["http://localhost:3001/*", "http://backend:3001/*"],
       "webOrigins": ["*"],
-      "serviceAccountsClientId": "jump-api",
       "authorizationServicesEnabled": false
     }
   ],
   "roles": {
     "realm": [
-      {
-        "name": "user",
-        "description": "Default user role"
-      },
-      {
-        "name": "admin",
-        "description": "Administrator role"
-      },
+      { "name": "user", "description": "Default user role" },
+      { "name": "admin", "description": "Administrator role" },
       {
         "name": "realm-admin",
         "description": "Realm administrator with full access to manage users and clients"
