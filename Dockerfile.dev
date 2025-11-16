@@ -2,3 +2,6 @@ FROM quay.io/keycloak/keycloak:25.0.6
 
 # Copy pre-configured realms and clients so they can be imported on boot
 COPY realm /opt/keycloak/data/import
+
+# Mountable custom themes for iterative development
+COPY themes/jump /opt/keycloak/themes/jump

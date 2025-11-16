@@ -1,23 +1,74 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: Jump-Postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: jump
+      POSTGRES_USER: jump
+      POSTGRES_PASSWORD: jump
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - jump-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jump"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: Jump-MailHog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    networks:
+      - jump-network
+
   keycloak:
     build:
       context: ..
       dockerfile: ./Dockerfile.dev
     container_name: Jump-Keycloak
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
     command:
       [
         "start-dev",
         "--hostname-strict=false",
         "--http-enabled=true",
         "--import-realm",
+        "--spi-theme-cache-themes=false",
+        "--spi-theme-cache-templates=false",
+        "--spi-theme-static-max-age=-1",
       ]
     env_file:
       - ../.env
+    environment:
+      KC_THEME_CACHE_ENABLED: "false"
+      KC_SPI_THEME_CACHE_THEMES: "false"
+      KC_SPI_THEME_CACHE_TEMPLATES: "false"
+      KC_SPI_THEME_STATIC_MAX_AGE: "-1"
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/jump
+      KC_DB_USERNAME: jump
+      KC_DB_PASSWORD: jump
+      # SMTP configuration for MailHog (email testing)
+      KC_SMTP_HOST: mailhog
+      KC_SMTP_PORT: 1025
+      KC_SMTP_FROM: noreply@jump.dev
+      KC_SMTP_FROM_DISPLAY_NAME: Jump
     working_dir: /opt/keycloak
     ports:
       - "${PORT:-8080}:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
+      - ../themes/jump:/opt/keycloak/themes/jump
     networks:
       - jump-network
     healthcheck:
@@ -30,6 +81,7 @@ services:
 
 volumes:
   keycloak_data:
+  pgdata:
 
 networks:
   jump-network:

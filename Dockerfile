@@ -4,6 +4,9 @@ FROM quay.io/keycloak/keycloak:25.0.6
 # Copy realm export so it is picked up by --import-realm
 COPY realm /opt/keycloak/data/import
 
+# Copy custom themes
+COPY themes/jump /opt/keycloak/themes/jump
+
 # Keep the Postgres driver 
 ENV KC_DB=postgres
 RUN /opt/keycloak/bin/kc.sh build --db=postgres
